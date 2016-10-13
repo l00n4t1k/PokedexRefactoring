@@ -74,27 +74,30 @@ class PokemonScraper(Scraper):
     def get_formatter(self):
         return self.__my_formatter
 
-    # def print(self, the_gen, the_list):
-    #     self.__my_printer.printer(the_gen, the_list)
-
     # long method
     def web_scraper(self):
         print('Scraping Main')
-        dex_data = []
-        r = requests.get(self.get_url() + 'national').text
-        soup = BeautifulSoup(r, 'html.parser')
+        soup = self.get_bs4_data(self.get_url() + 'national')
         table = soup.find('div', attrs={'class': 'infocard-tall-list'})
         cards = table.find_all('span')
-        c = 0
-        for i in range(0, 1):  # <---
-            for card in cards[self.__min:self.__max]:
-                stuffs = card.find_all(['a', 'small'])
-                if c < 1:
-                    dex_data.append([stuff.text for stuff in stuffs[1:4]])
-                    c += 1
+        dex_data = self.get_pokemon_cards(cards, 1)
         dex_data = self.format_dex(dex_data)
         self.set_nat_dex(dex_data)
-        # print(self.get_nat_dex())
+
+    def get_pokemon_cards(self, cards, x):
+        data = []
+        c = 0
+        for card in cards[self.__min:self.__max]:
+            stuffs = card.find_all(['a', 'small'])
+            if c < x:
+                data.append([stuff.text for stuff in stuffs[1:4]])
+                c += 1
+        return data
+
+    @staticmethod
+    def get_bs4_data(url):
+        r = requests.get(url).text
+        return BeautifulSoup(r, 'html.parser')
 
     def scrape_additional(self, the_list):
         print('Scraping additional')
