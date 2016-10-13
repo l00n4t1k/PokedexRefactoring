@@ -55,6 +55,14 @@ class TestScraper(unittest.TestCase):
         output = self.my_formatter.weight_imp_remover('15.2 lbs (6.9 kg)')
         self.assertEqual(output, '6.9 kg')
 
+    def test_imp_form_bulbasaur_weight(self):
+        output = self.my_formatter.imp_remover('2′4″ (0.71m)', 'm')
+        self.assertEqual(output, '0.71m')
+
+    def test_imp_form_bulbasaur_height(self):
+        output = self.my_formatter.imp_remover('15.2 lbs (6.9 kg)', ' kg')
+        self.assertEqual(output, '6.9 kg')
+
     def test_readability_form_bulbasaur(self):
         test_data = ['001', 'Bulbasaur', 'Grass', 'Poison',
                      'http://pokemondb.net/pokedex/Bulbasaur', 'Seed Pokemon',
@@ -74,8 +82,8 @@ class TestScraper(unittest.TestCase):
         expected = [['001', 'Bulbasaur', 'Grass', 'Poison',
                     'http://pokemondb.net/pokedex/Bulbasaur', 'Seed Pokemon',
                     '0.71m', '6.9 kg', '001 (Red/Blue/Yellow/FireRed/'
-                                       'LeafGreen)226 (Gold/Silver/Crystal)231'
-                                       ' (HeartGold/SoulSilver)080 (X/Y)']]
+                    'LeafGreen)226 (Gold/Silver/Crystal)231'
+                    ' (HeartGold/SoulSilver)080 (X/Y)']]
         self.my_scraper.set_generation(0)
         self.my_scraper.web_scraper()
         actual = self.my_scraper.get_nat_dex()

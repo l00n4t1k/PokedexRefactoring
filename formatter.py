@@ -66,6 +66,12 @@ class Formatter(object):
         return n.group()
 
     @staticmethod
+    def imp_remover(i, c):
+        n = re.search(r'\d*[.]\d*' + c, i)
+        return n.group()
+
+
+    @staticmethod
     def get_gen(the_list, the_min, the_max):
         the_res = []
         for datum in the_list[the_min:the_max]:

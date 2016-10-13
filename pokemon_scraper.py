@@ -104,8 +104,8 @@ class PokemonScraper(Scraper):
             # print(indi)
 
             datum.append(self.__my_formatter.accent_remover(indi[2]))
-            datum.append(self.__my_formatter.height_imp_remover(indi[3]))
-            datum.append(self.__my_formatter.weight_imp_remover(indi[4]))
+            datum.append(self.__my_formatter.imp_remover(indi[3], 'm'))
+            datum.append(self.__my_formatter.imp_remover(indi[4], ' kg'))
             datum.append(self.__my_formatter.comma_remover(indi[6]))
             # print(datum)
         return the_list
