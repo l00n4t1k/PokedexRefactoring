@@ -11,6 +11,7 @@ class PokemonScraper(Scraper):
     __nat_dex = []
     __local_dex = []
     __generation = 0
+    __the_url = 'http://pokemondb.net/pokedex/'
 
     def __init__(self, the_formatter):
         self.__my_formatter = the_formatter
@@ -38,6 +39,12 @@ class PokemonScraper(Scraper):
         elif gen == 0:
             self.__min = 0
             self.__max = 722
+
+    def set_url(self, new_url):
+        self.__the_url = new_url
+
+    def get_url(self):
+        return self.__the_url
 
     def set_nat_dex(self, the_dex):
         self.__nat_dex = the_dex
@@ -74,8 +81,7 @@ class PokemonScraper(Scraper):
     def web_scraper(self):
         print('Scraping Main')
         dex_data = []
-        url = 'http://pokemondb.net/pokedex/'  # <---
-        r = requests.get(url + 'national').text
+        r = requests.get(self.get_url() + 'national').text
         soup = BeautifulSoup(r, 'html.parser')
         table = soup.find('div', attrs={'class': 'infocard-tall-list'})
         cards = table.find_all('span')
@@ -86,7 +92,7 @@ class PokemonScraper(Scraper):
                 if c < 1:
                     dex_data.append([stuff.text for stuff in stuffs[1:4]])
                     c += 1
-        dex_data = self.format_dex(dex_data, url)
+        dex_data = self.format_dex(dex_data)
         self.set_nat_dex(dex_data)
         # print(self.get_nat_dex())
 
@@ -110,10 +116,11 @@ class PokemonScraper(Scraper):
             # print(datum)
         return the_list
 
-    def format_dex(self, the_dex, url):  # <--- message chain for URL
+    def format_dex(self, the_dex):
         dex_data = self.__my_formatter.hash_stripper(the_dex)
         dex_data = self.__my_formatter.type_formatter(dex_data)
-        dex_data = self.__my_formatter.add_url(self.get_formatter(), dex_data, url)
+        dex_data = self.__my_formatter.add_url(self.get_formatter(), dex_data,
+                                               self.get_url())
         dex_data = self.__my_formatter.get_gen(
             dex_data, self.__min, self.__max)
         dex_data = self.scrape_additional(dex_data)
